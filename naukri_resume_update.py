@@ -128,7 +128,7 @@ class NaukriLogin(object):
                 f"Chrome Driver initiated with user agent: {agent}")
 
         except Exception as e:
-            self.logger.exceptiont('Error when initializing chrome driver on line {}'.format(
+            self.logger.exception('Error when initializing chrome driver on line {}'.format(
                 sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
             raise e
@@ -177,7 +177,7 @@ class NaukriLogin(object):
             self.logger.info(
                 f"Firefox Driver initiated with user agent: {agent}")
         except Exception as e:
-            self.logger.exceptiont('Error when initializing geckodriver on line {}'.format(
+            self.logger.exception('Error when initializing geckodriver on line {}'.format(
                 sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
             raise e
