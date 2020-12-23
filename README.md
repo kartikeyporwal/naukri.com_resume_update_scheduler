@@ -20,6 +20,8 @@
 `NAUKRI_USER_EMAIL` - STR - naukri.com registered email address  
 `NAUKRI_USER_PASSWORD` - STR - naukri.com account password  
 
+`WEBDRIVER_MODE` - STR - CHROME or GECKO; webdriver mode to open particular webdriver
+
 
 ## Sample log
 
