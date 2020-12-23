@@ -171,6 +171,7 @@ class NaukriLogin(object):
                 executable_path=os.environ.get("GECKO_WEBDRIVER_PATH"),
                 options=self._firefox_options,
                 firefox_profile=self._firefox_profile,
+                service_log_path=os.path.devnull,
                 # service_log_path=os.path.join(ROOT_DIR, "geckodriver.log")
             )
 
