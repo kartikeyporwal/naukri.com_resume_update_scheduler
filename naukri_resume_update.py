@@ -16,7 +16,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 # ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 ROOT_DIR = "/app/tmp"
 
-logging.config.fileConfig(os.path.join(ROOT_DIR, "logging_config.ini"))
+logging.config.fileConfig("logging_config.ini")
 run_every_secs = int(os.environ.get("RUN_EVERY_SECS", 10))
 
 
