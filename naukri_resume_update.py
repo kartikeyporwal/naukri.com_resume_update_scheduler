@@ -80,88 +80,107 @@ class NaukriLogin(object):
     @property
     def initiate_chrome_webdriver(self):
         """Initiates a driver instance of chrome webdriver"""
-        # instantiate chrome webdriver
-        self._chrome_options = webdriver.ChromeOptions()
 
-        # open in incognito mode
-        self._chrome_options.add_argument("-incognito")
+        self.logger.info(f"Initializing chrome driver")
+        try:
+            # instantiate chrome webdriver
+            self._chrome_options = webdriver.ChromeOptions()
 
-        self._chrome_options.binary_location = os.environ.get(
-            "GOOGLE_CHROME_BIN")
+            # open in incognito mode
+            self._chrome_options.add_argument("-incognito")
 
-        # # open chrome without gui
-        self._chrome_options.add_argument("--headless")
+            self._chrome_options.binary_location = os.environ.get(
+                "GOOGLE_CHROME_BIN")
 
-        # This disables the message "Chrome is being is controlled by automated test software."
-        # # deprecated in newer version of chrome webdriver
-        # self._chrome_options.add_argument("disable-infobars")
-        # this one works
-        self._chrome_options.add_experimental_option(
-            name="excludeSwitches",
-            value=['enable-automation']
-        )
-        self._chrome_options.add_experimental_option("detach", True)
+            # # open chrome without gui
+            self._chrome_options.add_argument("--headless")
 
-        # # set user agent
-        # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
-        # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/77.0.3865.90 Safari/537.36
-        self._chrome_options.add_argument(
-            "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
+            # This disables the message "Chrome is being is controlled by automated test software."
+            # # deprecated in newer version of chrome webdriver
+            # self._chrome_options.add_argument("disable-infobars")
+            # this one works
+            self._chrome_options.add_experimental_option(
+                name="excludeSwitches",
+                value=['enable-automation']
+            )
+            self._chrome_options.add_experimental_option("detach", True)
 
-        self._chrome_options.add_argument("--disable-popups")
-        self._chrome_options.add_argument("--disable-notifications")
-        self._chrome_options.add_argument("--disable-gpu")
-        self._chrome_options.add_argument("--no-sandbox")
-        # self._chrome_options.add_argument("--disable-dev-sh-usage")
+            # # set user agent
+            # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+            # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/77.0.3865.90 Safari/537.36
+            self._chrome_options.add_argument(
+                "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
 
-        self.driver = webdriver.Chrome(
-            executable_path=os.environ.get("CHROME_WEBDRIVER_PATH"),
-            options=self._chrome_options,
-        )
+            self._chrome_options.add_argument("--disable-popups")
+            self._chrome_options.add_argument("--disable-notifications")
+            self._chrome_options.add_argument("--disable-gpu")
+            self._chrome_options.add_argument("--no-sandbox")
+            # self._chrome_options.add_argument("--disable-dev-sh-usage")
 
-        # get user agent
-        agent = self.driver.execute_script("return navigator.userAgent")
-        self.logger.info(f"Chrome Driver initiated with user agent: {agent}")
+            self.driver = webdriver.Chrome(
+                executable_path=os.environ.get("CHROME_WEBDRIVER_PATH"),
+                options=self._chrome_options,
+            )
+
+            # get user agent
+            agent = self.driver.execute_script("return navigator.userAgent")
+            self.logger.info(
+                f"Chrome Driver initiated with user agent: {agent}")
+
+        except Exception as e:
+            self.logger.exceptiont('Error when initializing chrome driver on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
+            raise e
 
     @property
     def initiate_firefox_webdriver(self):
         """Initiates a driver instance of firefox webdriver"""
-        # instantiating firefox webdriver
-        self._firefox_options = webdriver.FirefoxOptions()
-        # open in incognito mode
-        self._firefox_options.add_argument("-incognito")
 
-        # open chrome without gui
-        self._firefox_options.add_argument("--headless")
+        self.logger.info(f"Initializing gecko driver")
+        try:
+            # instantiating firefox webdriver
+            self._firefox_options = webdriver.FirefoxOptions()
+            # open in incognito mode
+            self._firefox_options.add_argument("-incognito")
 
-        self._firefox_options.add_argument("--disable-popups")
-        self._firefox_options.add_argument("--disable-notifications")
-        self._firefox_options.add_argument("--disable-gpu")
-        self._firefox_options.add_argument("--no-sandbox")
-        self._firefox_options.add_argument("--disable-dev-sh-usage")
+            # open chrome without gui
+            self._firefox_options.add_argument("--headless")
 
-        # setting user agent for firefox profile
-        self._firefox_profile = webdriver.FirefoxProfile()
+            self._firefox_options.add_argument("--disable-popups")
+            self._firefox_options.add_argument("--disable-notifications")
+            self._firefox_options.add_argument("--disable-gpu")
+            self._firefox_options.add_argument("--no-sandbox")
+            self._firefox_options.add_argument("--disable-dev-sh-usage")
 
-        # set user agent
-        # Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
-        # Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
-        self._firefox_profile.set_preference(
-            key="general.useragent.override",
-            value="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-        )
+            # setting user agent for firefox profile
+            self._firefox_profile = webdriver.FirefoxProfile()
 
-        self.driver = webdriver.Firefox(
-            firefox_binary=os.environ.get("FIREFOX_BINARY_PATH"),
-            executable_path=os.environ.get("GECKO_WEBDRIVER_PATH"),
-            options=self._firefox_options,
-            firefox_profile=self._firefox_profile,
-            service_log_path=os.path.join(ROOT_DIR, "geckodriver.log")
-        )
+            # set user agent
+            # Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
+            # Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
+            self._firefox_profile.set_preference(
+                key="general.useragent.override",
+                value="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+            )
 
-        # get user agent
-        agent = self.driver.execute_script("return navigator.userAgent")
-        self.logger.info(f"Firefox Driver initiated with user agent: {agent}")
+            self.driver = webdriver.Firefox(
+                firefox_binary=os.environ.get("FIREFOX_BINARY_PATH"),
+                executable_path=os.environ.get("GECKO_WEBDRIVER_PATH"),
+                options=self._firefox_options,
+                firefox_profile=self._firefox_profile,
+                service_log_path=os.path.join(ROOT_DIR, "geckodriver.log")
+            )
+
+            # get user agent
+            agent = self.driver.execute_script("return navigator.userAgent")
+            self.logger.info(
+                f"Firefox Driver initiated with user agent: {agent}")
+        except Exception as e:
+            self.logger.exceptiont('Error when initializing geckodriver on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
+            raise e
 
     # Login to naukri account
 
@@ -379,6 +398,15 @@ if __name__ == "__main__":
 
     try:
         print(f"Instantiating the script")
+
+        firefox_binary = os.environ.get("FIREFOX_BINARY_PATH")
+        executable_path = os.environ.get("GECKO_WEBDRIVER_PATH")
+
+        print(
+            f"Firefox binary exists - {firefox_binary} and executable - {os.access(firefox_binary, os.X_OK)}")
+        print(
+            f"Geckodriver binary exists - {executable_path} and executable - {os.access(executable_path, os.X_OK)}")
+
         naukri = NaukriLogin(username=os.environ.get("NAUKRI_USER_EMAIL"),
                              password=os.environ.get("NAUKRI_USER_PASSWORD"),
                              )
@@ -387,10 +415,10 @@ if __name__ == "__main__":
 
         print(f"Updating resume")
         naukri.update_resume()
-    
-    except Exception as e:
-        print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
+    except Exception as e:
+        print('Error on line {}'.format(
+            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     finally:
         time.sleep(5)

@@ -21,3 +21,10 @@
 `NAUKRI_USER_PASSWORD` - STR - naukri.com account password  
 
 
+## Sample log
+
+remote: -----> Extracting Firefox binaries to /tmp/build_2b383b7a/vendor/firefox
+remote: -----> geckodriver app detected
+remote: -----> Searching for latest geckodriver version...
+remote: -----> Found geckodriver version: v0.28.0
+remote: -----> Extracting geckodriver binaries to /tmp/build_2b383b7a/vendor/geckodriver
