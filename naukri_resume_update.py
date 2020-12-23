@@ -1,6 +1,7 @@
 import logging
 import logging.config
 import os
+import sys
 import time
 
 import requests
@@ -387,8 +388,9 @@ if __name__ == "__main__":
         print(f"Updating resume")
         naukri.update_resume()
     
-    except Exception as error:
-        print(f"An error occurred - {error}")
+    except Exception as e:
+        print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
 
     finally:
         time.sleep(5)
