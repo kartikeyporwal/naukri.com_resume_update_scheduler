@@ -120,7 +120,7 @@ class NaukriLogin(object):
             self._chrome_options.add_argument("--disable-notifications")
             self._chrome_options.add_argument("--disable-gpu")
             self._chrome_options.add_argument("--no-sandbox")
-            # self._chrome_options.add_argument("--disable-dev-sh-usage")
+            self._chrome_options.add_argument("--disable-dev-sh-usage")
 
             self.driver = webdriver.Chrome(
                 executable_path=os.environ.get("CHROME_WEBDRIVER_PATH"),
