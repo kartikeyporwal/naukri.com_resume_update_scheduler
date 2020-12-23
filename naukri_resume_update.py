@@ -13,7 +13,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+# ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+ROOT_DIR = "/app/tmp"
+
 logging.config.fileConfig(os.path.join(ROOT_DIR, "logging_config.ini"))
 run_every_secs = int(os.environ.get("RUN_EVERY_SECS", 10))
 
@@ -403,9 +405,9 @@ if __name__ == "__main__":
         executable_path = os.environ.get("GECKO_WEBDRIVER_PATH")
 
         print(
-            f"Firefox binary exists - {firefox_binary} and executable - {os.access(firefox_binary, os.X_OK)}")
+            f"Firefox binary - {firefox_binary} exists - {os.path.isfile(firefox_binary)} and executable - {os.access(firefox_binary, os.X_OK)}")
         print(
-            f"Geckodriver binary exists - {executable_path} and executable - {os.access(executable_path, os.X_OK)}")
+            f"Geckodriver binary - {executable_path} exists - {os.path.isfile(executable_path)} and executable - {os.access(executable_path, os.X_OK)}")
 
         naukri = NaukriLogin(username=os.environ.get("NAUKRI_USER_EMAIL"),
                              password=os.environ.get("NAUKRI_USER_PASSWORD"),
