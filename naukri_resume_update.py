@@ -313,7 +313,6 @@ class NaukriLogin(object):
                 f"Element Found: {self._pas}")
 
     # update resume
-    @schedule_run(run_every_secs=run_every_secs)
     def update_resume(self):
         try:
             time.sleep(30)
@@ -324,7 +323,6 @@ class NaukriLogin(object):
             # self.driver.refresh()
             self.driver.get(self._profile_url)
             time.sleep(60)
-
 
             resume_class = "right download"
             upload_resume_id = "attachCV"
@@ -413,27 +411,9 @@ class NaukriLogin(object):
                 f'Will try next time. Unexpected error occurred at line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
 
 
-if __name__ == "__main__":
-
+@schedule_run(run_every_secs=run_every_secs)
+def main():
     try:
-        print(f"Instantiating the script")
-
-        firefox_binary = os.environ.get("FIREFOX_BINARY_PATH")
-        executable_path = os.environ.get("GECKO_WEBDRIVER_PATH")
-
-        chrome_binary = os.environ.get("GOOGLE_CHROME_BIN")
-        chromedriver_path = os.environ.get("CHROME_WEBDRIVER_PATH")
-
-        print(
-            f"Firefox binary - {firefox_binary} exists - {os.path.isfile(firefox_binary)} and executable - {os.access(firefox_binary, os.X_OK)}")
-        print(
-            f"Geckodriver binary - {executable_path} exists - {os.path.isfile(executable_path)} and executable - {os.access(executable_path, os.X_OK)}")
-
-        print(
-            f"Chrome binary - {chrome_binary} exists - {os.path.isfile(chrome_binary)} and executable - {os.access(chrome_binary, os.X_OK)}")
-        print(
-            f"Chromedriver binary - {chromedriver_path} exists - {os.path.isfile(chromedriver_path)} and executable - {os.access(chromedriver_path, os.X_OK)}")
-
         naukri = NaukriLogin(username=os.environ.get("NAUKRI_USER_EMAIL"),
                              password=os.environ.get("NAUKRI_USER_PASSWORD"),
                              )
@@ -451,3 +431,26 @@ if __name__ == "__main__":
         time.sleep(5)
         if naukri.driver.service.process != None:
             naukri.driver.quit()
+
+
+if __name__ == "__main__":
+
+    print(f"Instantiating the script")
+
+    firefox_binary = os.environ.get("FIREFOX_BINARY_PATH")
+    executable_path = os.environ.get("GECKO_WEBDRIVER_PATH")
+
+    chrome_binary = os.environ.get("GOOGLE_CHROME_BIN")
+    chromedriver_path = os.environ.get("CHROME_WEBDRIVER_PATH")
+
+    print(
+        f"Firefox binary - {firefox_binary} exists - {os.path.isfile(firefox_binary)} and executable - {os.access(firefox_binary, os.X_OK)}")
+    print(
+        f"Geckodriver binary - {executable_path} exists - {os.path.isfile(executable_path)} and executable - {os.access(executable_path, os.X_OK)}")
+
+    print(
+        f"Chrome binary - {chrome_binary} exists - {os.path.isfile(chrome_binary)} and executable - {os.access(chrome_binary, os.X_OK)}")
+    print(
+        f"Chromedriver binary - {chromedriver_path} exists - {os.path.isfile(chromedriver_path)} and executable - {os.access(chromedriver_path, os.X_OK)}")
+
+    main()
