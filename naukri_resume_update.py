@@ -93,10 +93,10 @@ class NaukriLogin(object):
             self._chrome_options = webdriver.ChromeOptions()
 
             # open in incognito mode
-            self._chrome_options.add_argument("-incognito")
+            # self._chrome_options.add_argument("-incognito")
 
-            # self._chrome_options.binary_location = os.environ.get(
-            #     "GOOGLE_CHROME_BIN")
+            self._chrome_options.binary_location = os.environ.get(
+                "GOOGLE_CHROME_BIN")
 
             # # open chrome without gui
             self._chrome_options.add_argument("--headless")
@@ -114,12 +114,12 @@ class NaukriLogin(object):
             # # set user agent
             # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
             # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/77.0.3865.90 Safari/537.36
-            self._chrome_options.add_argument(
-                "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
+            # self._chrome_options.add_argument(
+            #     "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
 
-            self._chrome_options.add_argument("--disable-popups")
-            self._chrome_options.add_argument("--disable-notifications")
-            self._chrome_options.add_argument("--disable-gpu")
+            # self._chrome_options.add_argument("--disable-popups")
+            # self._chrome_options.add_argument("--disable-notifications")
+            # self._chrome_options.add_argument("--disable-gpu")
             self._chrome_options.add_argument("--no-sandbox")
             self._chrome_options.add_argument("--disable-dev-sh-usage")
 
