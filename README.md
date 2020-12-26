@@ -40,7 +40,7 @@ For Geckodriver - `http://github.com/buitron/geckodriver-buildpack`
 - Click `New` and `create new app`  
 - Once app is created, go to setting add above mentioned build packs  
 - In `Config Vars` section, click `Reveal Config Vars` and add above mentioned environment variables with their respective values  
-- 
+- Follow guide on deploy section.
 
 
 ## TO-DOs
