@@ -14,8 +14,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-# ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
-ROOT_DIR = ""
+ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+# ROOT_DIR = ""
 
 logging.config.fileConfig("logging_config.ini")
 run_every_secs = int(os.environ.get("RUN_EVERY_SECS", 10))
@@ -43,6 +43,7 @@ def schedule_run(run_every_secs):
 
 
 def get_resume_path():
+    """Downloads resume from pdf url specified in environment variable `RESUME_PDF_URL`"""
     url = os.environ.get("RESUME_PDF_URL")
 
     resume_file_path = os.path.abspath(os.path.join(
@@ -93,7 +94,7 @@ class NaukriLogin(object):
             self._chrome_options = webdriver.ChromeOptions()
 
             # open in incognito mode
-            # self._chrome_options.add_argument("-incognito")
+            self._chrome_options.add_argument("-incognito")
 
             self._chrome_options.binary_location = os.environ.get(
                 "GOOGLE_CHROME_BIN")
@@ -105,27 +106,27 @@ class NaukriLogin(object):
             # # deprecated in newer version of chrome webdriver
             # self._chrome_options.add_argument("disable-infobars")
             # this one works
-            # self._chrome_options.add_experimental_option(
-            #     name="excludeSwitches",
-            #     value=['enable-automation']
-            # )
-            # self._chrome_options.add_experimental_option("detach", True)
+            self._chrome_options.add_experimental_option(
+                name="excludeSwitches",
+                value=['enable-automation']
+            )
+            self._chrome_options.add_experimental_option("detach", True)
 
             # # set user agent
             # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
             # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/77.0.3865.90 Safari/537.36
-            # self._chrome_options.add_argument(
-            #     "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
+            self._chrome_options.add_argument(
+                "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
 
-            # self._chrome_options.add_argument("--disable-popups")
-            # self._chrome_options.add_argument("--disable-notifications")
-            # self._chrome_options.add_argument("--disable-gpu")
+            self._chrome_options.add_argument("--disable-popups")
+            self._chrome_options.add_argument("--disable-notifications")
+            self._chrome_options.add_argument("--disable-gpu")
             self._chrome_options.add_argument("--no-sandbox")
             self._chrome_options.add_argument("--disable-dev-sh-usage")
 
             self.driver = webdriver.Chrome(
-                # executable_path=os.environ.get("CHROME_WEBDRIVER_PATH"),
-                executable_path=ChromeDriverManager().install(),
+                executable_path=os.environ.get("CHROME_WEBDRIVER_PATH"),
+                # executable_path=ChromeDriverManager().install(),
                 options=self._chrome_options,
             )
 
@@ -135,8 +136,8 @@ class NaukriLogin(object):
                 f"Chrome Driver initiated with user agent: {agent}")
 
         except Exception as e:
-            self.logger.exception('Error when initializing chrome driver on line {}'.format(
-                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+            self.logger.exception(
+                f'Error when initializing chrome driver on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
 
             raise e
 
@@ -185,8 +186,8 @@ class NaukriLogin(object):
             self.logger.info(
                 f"Firefox Driver initiated with user agent: {agent}")
         except Exception as e:
-            self.logger.exception('Error when initializing geckodriver on line {}'.format(
-                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+            self.logger.exception(
+                f'Error when initializing geckodriver on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
 
             raise e
 
@@ -314,92 +315,100 @@ class NaukriLogin(object):
     # update resume
     @schedule_run(run_every_secs=run_every_secs)
     def update_resume(self):
-        resume_file_path = get_resume_path()
-        self.logger.info(f"Retrieved resume file path - {resume_file_path}")
-
-        self.driver.refresh()
-        self.driver.get(self._profile_url)
-
-        resume_class = "right download"
-        upload_resume_id = "attachCV"
-        resume_class = upload_resume_id
-
-        resume_submit_button_xpath = "//input[@type='button' and @value='Update Resume']"
-        resume_submit_button_xpath = "//input[@type='button']"
-        # resume_submit_button_xpath = "//button[@type='button']"
-        # resume_submit_button_xpath = "result"
-        # resume_submit_button_xpath = "btn btn-block dummyUpload fs14"
-        # resume_submit_button_xpath = ".btn.btn-block.dummyUpload.fs14"
-
-        # last_height = self.driver.execute_script("return document.body.scrollHeight")
-        # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(5)
-
-        # ----------------------------------------------------------------------------------------
-        # finding resume element from naukri profile
         try:
-            self.logger.info(f"Finding resume element - {resume_class}")
-            self._resume_elem = self.driver.find_element_by_id(
-                id_=resume_class)
-            self._resume_elem.send_keys(resume_file_path)
-            self.logger.debug(
-                f"Element Found: {self._resume_elem}. ")
-
-        except Exception:
-            self.logger.exception("Error found in finding resume element:  ")
-            self.logger.debug(
-                f"Finding resume element using explicit time:  {resume_class}")
-            self._resume_elem = WebDriverWait(
-                driver=self.driver,
-                timeout=10
-            ).until(
-                EC.presence_of_element_located(
-                    locator=(By.ID, resume_class)
-                )
-            )
-            self._resume_elem.send_keys(resume_file_path)
-
-            self.logger.debug(
-                f"Element Found: {self._resume_elem}. ")
-
-        # ----------------------------------------------------------------------------------------
-        # finding resume submit button
-        try:
+            resume_file_path = get_resume_path()
             self.logger.info(
-                f"Finding resume submit button element - {resume_submit_button_xpath}")
-            self._resume_submit_elem = self.driver.find_element_by_xpath(
-                resume_submit_button_xpath)
-            self._resume_submit_elem.send_keys(Keys.RETURN)
-            # self._resume_submit_elem.click()
-            # self.driver.execute_script("arguments[0].click();", self._resume_submit_elem)
+                f"Retrieved resume file path - {resume_file_path}")
 
-            # a = ActionChains(self.driver).move_to_element(self._resume_submit_elem)
-            # a.click().perform()
+            self.driver.refresh()
+            self.driver.get(self._profile_url)
+            time.sleep(16)
 
-            self.logger.debug(
-                f"Element Found: {self._resume_submit_elem}. Button Pressed")
+            resume_class = "right download"
+            upload_resume_id = "attachCV"
+            resume_class = upload_resume_id
 
-        except Exception:
-            self.logger.exception(
-                "Error found in finding resume submit button element:  ")
-            self.logger.debug(
-                f"Finding resume submit button element using explicit time:  {resume_submit_button_xpath}")
-            self._resume_submit_elem = WebDriverWait(
-                driver=self.driver,
-                timeout=10
-            ).until(
-                EC.presence_of_element_located(
-                    locator=(By.XPATH, resume_submit_button_xpath)
+            resume_submit_button_xpath = "//input[@type='button' and @value='Update Resume']"
+            resume_submit_button_xpath = "//input[@type='button']"
+            # resume_submit_button_xpath = "//button[@type='button']"
+            # resume_submit_button_xpath = "result"
+            # resume_submit_button_xpath = "btn btn-block dummyUpload fs14"
+            # resume_submit_button_xpath = ".btn.btn-block.dummyUpload.fs14"
+
+            # last_height = self.driver.execute_script("return document.body.scrollHeight")
+            # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(5)
+
+            # ----------------------------------------------------------------------------------------
+            # finding resume element from naukri profile
+            try:
+                self.logger.info(f"Finding resume element - {resume_class}")
+                self._resume_elem = self.driver.find_element_by_id(
+                    id_=resume_class)
+                self._resume_elem.send_keys(resume_file_path)
+                self.logger.debug(
+                    f"Element Found: {self._resume_elem}. ")
+
+            except Exception:
+                self.logger.exception(
+                    "Error found in finding resume element:  ")
+                self.logger.debug(
+                    f"Finding resume element using explicit time:  {resume_class}")
+                self._resume_elem = WebDriverWait(
+                    driver=self.driver,
+                    timeout=10
+                ).until(
+                    EC.presence_of_element_located(
+                        locator=(By.ID, resume_class)
+                    )
                 )
-            )
-            self._resume_submit_elem.send_keys(Keys.RETURN)
+                self._resume_elem.send_keys(resume_file_path)
 
-            # self._resume_submit_elem.click()
-            # self.driver.execute_script("arguments[0].click();", self._resume_submit_elem)
-            # ActionChains(self.driver).move_to_element(self._resume_submit_elem).click().perform()
+                self.logger.debug(
+                    f"Element Found: {self._resume_elem}. ")
 
-            self.logger.debug(
-                f"Element Found: {self._resume_submit_elem}. Button Pressed")
+            # ----------------------------------------------------------------------------------------
+            # finding resume submit button
+            try:
+                self.logger.info(
+                    f"Finding resume submit button element - {resume_submit_button_xpath}")
+                self._resume_submit_elem = self.driver.find_element_by_xpath(
+                    resume_submit_button_xpath)
+                self._resume_submit_elem.send_keys(Keys.RETURN)
+                # self._resume_submit_elem.click()
+                # self.driver.execute_script("arguments[0].click();", self._resume_submit_elem)
+
+                # a = ActionChains(self.driver).move_to_element(self._resume_submit_elem)
+                # a.click().perform()
+
+                self.logger.debug(
+                    f"Element Found: {self._resume_submit_elem}. Button Pressed")
+
+            except Exception:
+                self.logger.exception(
+                    "Error found in finding resume submit button element:  ")
+                self.logger.debug(
+                    f"Finding resume submit button element using explicit time:  {resume_submit_button_xpath}")
+                self._resume_submit_elem = WebDriverWait(
+                    driver=self.driver,
+                    timeout=10
+                ).until(
+                    EC.presence_of_element_located(
+                        locator=(By.XPATH, resume_submit_button_xpath)
+                    )
+                )
+                self._resume_submit_elem.send_keys(Keys.RETURN)
+
+                # self._resume_submit_elem.click()
+                # self.driver.execute_script("arguments[0].click();", self._resume_submit_elem)
+                # ActionChains(self.driver).move_to_element(self._resume_submit_elem).click().perform()
+
+                self.logger.debug(
+                    f"Element Found: {self._resume_submit_elem}. Button Pressed")
+
+        except Exception as e:
+            self.logger.error(
+                f'Will try next time. Unexpected error occurred at line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
 
 
 if __name__ == "__main__":
@@ -410,8 +419,8 @@ if __name__ == "__main__":
         firefox_binary = os.environ.get("FIREFOX_BINARY_PATH")
         executable_path = os.environ.get("GECKO_WEBDRIVER_PATH")
 
-        chrome_binary = os.environ.get("FIREFOX_BINARY_PATH")
-        chromedriver_path = os.environ.get("GECKO_WEBDRIVER_PATH")
+        chrome_binary = os.environ.get("GOOGLE_CHROME_BIN")
+        chromedriver_path = os.environ.get("CHROME_WEBDRIVER_PATH")
 
         print(
             f"Firefox binary - {firefox_binary} exists - {os.path.isfile(firefox_binary)} and executable - {os.access(firefox_binary, os.X_OK)}")
@@ -433,8 +442,8 @@ if __name__ == "__main__":
         naukri.update_resume()
 
     except Exception as e:
-        print('Error on line {}'.format(
-            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+        print(
+            f'Error on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
 
     finally:
         time.sleep(5)
