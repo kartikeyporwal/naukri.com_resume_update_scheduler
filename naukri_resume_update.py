@@ -275,7 +275,7 @@ class NaukriLogin(object):
                 "Finding email/username element using explicit time by name:  email")
             self._email = WebDriverWait(
                 driver=self.driver,
-                timeout=20
+                timeout=30
             ).until(
                 EC.presence_of_element_located(
                     locator=(By.NAME, username_elem_name)
@@ -302,7 +302,7 @@ class NaukriLogin(object):
                 f"Finding password element using explicit time by name:  {password_elem_name}")
             self._pas = WebDriverWait(
                 driver=self.driver,
-                timeout=20
+                timeout=30
             ).until(
                 EC.presence_of_element_located(
                     locator=(By.NAME, password_elem_name)
@@ -316,14 +316,14 @@ class NaukriLogin(object):
     @schedule_run(run_every_secs=run_every_secs)
     def update_resume(self):
         try:
+            time.sleep(30)
             resume_file_path = get_resume_path()
             self.logger.info(
                 f"Retrieved resume file path - {resume_file_path}")
 
-            self.driver.refresh()
-            time.sleep(30)
+            # self.driver.refresh()
             self.driver.get(self._profile_url)
-            time.sleep(30)
+            time.sleep(60)
 
             resume_class = "right download"
             upload_resume_id = "attachCV"
@@ -357,7 +357,7 @@ class NaukriLogin(object):
                     f"Finding resume element using explicit time:  {resume_class}")
                 self._resume_elem = WebDriverWait(
                     driver=self.driver,
-                    timeout=20
+                    timeout=30
                 ).until(
                     EC.presence_of_element_located(
                         locator=(By.ID, resume_class)
@@ -392,7 +392,7 @@ class NaukriLogin(object):
                     f"Finding resume submit button element using explicit time:  {resume_submit_button_xpath}")
                 self._resume_submit_elem = WebDriverWait(
                     driver=self.driver,
-                    timeout=20
+                    timeout=30
                 ).until(
                     EC.presence_of_element_located(
                         locator=(By.XPATH, resume_submit_button_xpath)
