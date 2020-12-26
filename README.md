@@ -33,6 +33,12 @@ For Google Chromedriver - `https://github.com/heroku/heroku-buildpack-chromedriv
 For Firefox - `https://github.com/buitron/firefox-buildpack`  
 For Geckodriver - `http://github.com/buitron/geckodriver-buildpack`  
 
+
+### Steps to deploy on Heroku
+
+- Login to https://dashboard.heroku.com/apps
+- Creat
+
 ## TO-DOs
 - Add Validations to check if logged in successfully  
 - Add options to choose different selectors when an element could not located  
