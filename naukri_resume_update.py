@@ -325,6 +325,7 @@ class NaukriLogin(object):
             self.driver.get(self._profile_url)
             time.sleep(60)
 
+
             resume_class = "right download"
             upload_resume_id = "attachCV"
             resume_class = upload_resume_id
