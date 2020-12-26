@@ -95,8 +95,8 @@ class NaukriLogin(object):
             # open in incognito mode
             self._chrome_options.add_argument("-incognito")
 
-            self._chrome_options.binary_location = os.environ.get(
-                "GOOGLE_CHROME_BIN")
+            # self._chrome_options.binary_location = os.environ.get(
+            #     "GOOGLE_CHROME_BIN")
 
             # # open chrome without gui
             self._chrome_options.add_argument("--headless")
@@ -105,11 +105,11 @@ class NaukriLogin(object):
             # # deprecated in newer version of chrome webdriver
             # self._chrome_options.add_argument("disable-infobars")
             # this one works
-            self._chrome_options.add_experimental_option(
-                name="excludeSwitches",
-                value=['enable-automation']
-            )
-            self._chrome_options.add_experimental_option("detach", True)
+            # self._chrome_options.add_experimental_option(
+            #     name="excludeSwitches",
+            #     value=['enable-automation']
+            # )
+            # self._chrome_options.add_experimental_option("detach", True)
 
             # # set user agent
             # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
