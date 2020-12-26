@@ -178,7 +178,7 @@ class NaukriLogin(object):
                 options=self._firefox_options,
                 firefox_profile=self._firefox_profile,
                 # service_log_path=os.path.devnull,
-                service_log_path=os.path.join(ROOT_DIR, "geckodriver.log"),
+                # service_log_path=os.path.join(ROOT_DIR, "geckodriver.log"),
             )
 
             # get user agent
