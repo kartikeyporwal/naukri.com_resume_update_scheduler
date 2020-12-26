@@ -1,1 +1,1 @@
-web: python naukri_resume_update.py
+worker: python naukri_resume_update.py
