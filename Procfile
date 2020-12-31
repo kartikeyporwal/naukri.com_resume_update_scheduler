@@ -1,0 +1,1 @@
+worker: python naukri_resume_update.py
