@@ -198,8 +198,15 @@ class NaukriLogin(object):
         username_elem_id = "usernameField"
         password_elem_id = "passwordField"
 
-        while 'naukri.com' not in self.driver.title.lower():
-            print(f"Waiting for page to load")
+        for char in ("-", "/")*10:
+            if 'naukri.com' in self.driver.title.lower():
+                break
+
+            print(f"\r{char} Waiting for page to load {char}\r", end="")
+            time.sleep(1)
+        else:
+            self.logger.info("naukri.com could not loaded")
+            return
 
         try:
             # ----------------------------------------------------------------------------------------
