@@ -23,12 +23,13 @@ run_every_secs = int(os.environ.get("RUN_EVERY_SECS", 10))
 
 def schedule_run(run_every_secs):
     """Decorator to schedule a function run every specified seconds"""
+
     def schedule(func):
         def wrapper(*args, **kwargs):
             res = func(*args, **kwargs)
             s = time.time()
             while True:
-                if time.time()-s > run_every_secs:
+                if time.time() - s > run_every_secs:
                     res = func(*args, **kwargs)
                     print(f"Time taken - {time.time()-s}")
                     s = time.time()
@@ -46,8 +47,9 @@ def get_resume_path():
     """Downloads resume from pdf url specified in environment variable `RESUME_PDF_URL`"""
     url = os.environ.get("RESUME_PDF_URL")
 
-    resume_file_path = os.path.abspath(os.path.join(
-        ROOT_DIR, "kartikey_porwal_resume.pdf"))
+    resume_file_path = os.path.abspath(
+        os.path.join(ROOT_DIR, "kartikey_porwal_resume.pdf")
+    )
 
     with open(resume_file_path, "wb") as f:
         with requests.get(url) as res:
@@ -97,7 +99,8 @@ class NaukriLogin(object):
             self._chrome_options.add_argument("-incognito")
 
             self._chrome_options.binary_location = os.environ.get(
-                "GOOGLE_CHROME_BIN")
+                "GOOGLE_CHROME_BIN"
+            )
 
             # # open chrome without gui
             self._chrome_options.add_argument("--headless")
@@ -107,8 +110,7 @@ class NaukriLogin(object):
             # self._chrome_options.add_argument("disable-infobars")
             # this one works
             self._chrome_options.add_experimental_option(
-                name="excludeSwitches",
-                value=['enable-automation']
+                name="excludeSwitches", value=["enable-automation"]
             )
             self._chrome_options.add_experimental_option("detach", True)
 
@@ -116,7 +118,8 @@ class NaukriLogin(object):
             # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
             # Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/77.0.3865.90 Safari/537.36
             self._chrome_options.add_argument(
-                "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
+                "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+            )
 
             self._chrome_options.add_argument("--disable-popups")
             self._chrome_options.add_argument("--disable-notifications")
@@ -133,11 +136,13 @@ class NaukriLogin(object):
             # get user agent
             agent = self.driver.execute_script("return navigator.userAgent")
             self.logger.info(
-                f"Chrome Driver initiated with user agent: {agent}")
+                f"Chrome Driver initiated with user agent: {agent}"
+            )
 
         except Exception as e:
             self.logger.exception(
-                f'Error when initializing chrome driver on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
+                f"Error when initializing chrome driver on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}"
+            )
 
             raise e
 
@@ -169,7 +174,7 @@ class NaukriLogin(object):
             # Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
             self._firefox_profile.set_preference(
                 key="general.useragent.override",
-                value="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+                value="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
             )
 
             self.driver = webdriver.Firefox(
@@ -184,10 +189,12 @@ class NaukriLogin(object):
             # get user agent
             agent = self.driver.execute_script("return navigator.userAgent")
             self.logger.info(
-                f"Firefox Driver initiated with user agent: {agent}")
+                f"Firefox Driver initiated with user agent: {agent}"
+            )
         except Exception as e:
             self.logger.exception(
-                f'Error when initializing geckodriver on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
+                f"Error when initializing geckodriver on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}"
+            )
 
             raise e
 
@@ -198,8 +205,8 @@ class NaukriLogin(object):
         username_elem_id = "usernameField"
         password_elem_id = "passwordField"
 
-        for char in ("-", "/")*10:
-            if 'naukri.com' in self.driver.title.lower():
+        for char in ("-", "/") * 10:
+            if "naukri.com" in self.driver.title.lower():
                 break
 
             print(f"\r{char} Waiting for page to load {char}\r", end="")
@@ -216,37 +223,45 @@ class NaukriLogin(object):
                 self._email = self.driver.find_element_by_id(username_elem_id)
                 self._email.send_keys(self.username)
                 self.logger.debug(
-                    f"Element Found: {self._email} Entered email/username: {self.username} ")
+                    f"Element Found: {self._email} Entered email/username: {self.username} "
+                )
             except:
                 self.logger.exception("Error found in finding email link:  ")
                 self.logger.debug(
-                    "Finding email/username element using explicit time by id:  email. ")
+                    "Finding email/username element using explicit time by id:  email. "
+                )
                 self._email = WebDriverWait(self.driver, 20).until(
                     EC.presence_of_element_located((By.ID, username_elem_id))
                 )
                 self._email.send_keys(self.username)
                 self.logger.debug(
-                    f"Element Found: {self._email} Entered email: {self.username}  ")
+                    f"Element Found: {self._email} Entered email: {self.username}  "
+                )
 
             time.sleep(2)
             # ----------------------------------------------------------------------------------------
             # finding password element by id
             try:
                 self.logger.debug(
-                    f"Finding password element by id:  {password_elem_id}")
+                    f"Finding password element by id:  {password_elem_id}"
+                )
                 self._pas = self.driver.find_element_by_id(password_elem_id)
                 self._pas.send_keys(self.password + Keys.ENTER)
                 self.logger.debug(
-                    f"Password Element Found: {self._pas} Pressed enter. ")
+                    f"Password Element Found: {self._pas} Pressed enter. "
+                )
             except:
                 self.logger.exception(
-                    "Error found in finding password link:  ")
+                    "Error found in finding password link:  "
+                )
 
                 # wait for transition then continue to fill items
                 self.logger.debug(
-                    f"Finding password element by name with explicit wait - id: {password_elem_id} ")
+                    f"Finding password element by name with explicit wait - id: {password_elem_id} "
+                )
                 self._pas = WebDriverWait(self.driver, 20).until(
-                    EC.presence_of_element_located((By.ID, password_elem_id)))
+                    EC.presence_of_element_located((By.ID, password_elem_id))
+                )
                 self._pas.send_keys(self.password, Keys.ENTER)
 
                 self.logger.debug(f"Password Element Found: {self._pas} ")
@@ -274,23 +289,23 @@ class NaukriLogin(object):
             )
             self._email.send_keys(self.username)
             self.logger.debug(
-                f"Element Found: {self._email}. Entered email/username: {self.username}")
+                f"Element Found: {self._email}. Entered email/username: {self.username}"
+            )
 
         except Exception:
             self.logger.exception("Error found in finding email link:  ")
             self.logger.debug(
-                "Finding email/username element using explicit time by name:  email")
-            self._email = WebDriverWait(
-                driver=self.driver,
-                timeout=30
-            ).until(
+                "Finding email/username element using explicit time by name:  email"
+            )
+            self._email = WebDriverWait(driver=self.driver, timeout=30).until(
                 EC.presence_of_element_located(
                     locator=(By.NAME, username_elem_name)
                 )
             )
             self._email.send_keys(self.username)
             self.logger.debug(
-                f"Element Found: {self._email}. Entered email: {self.username}")
+                f"Element Found: {self._email}. Entered email: {self.username}"
+            )
 
         # ----------------------------------------------------------------------------------------
         # finding password element from new naukri login page by name
@@ -300,24 +315,20 @@ class NaukriLogin(object):
                 name=password_elem_name
             )
             self._pas.send_keys(self.password + Keys.ENTER)
-            self.logger.debug(
-                f"Element Found: {self._pas}.")
+            self.logger.debug(f"Element Found: {self._pas}.")
 
         except Exception:
             self.logger.exception("Error found in finding password link:  ")
             self.logger.debug(
-                f"Finding password element using explicit time by name:  {password_elem_name}")
-            self._pas = WebDriverWait(
-                driver=self.driver,
-                timeout=30
-            ).until(
+                f"Finding password element using explicit time by name:  {password_elem_name}"
+            )
+            self._pas = WebDriverWait(driver=self.driver, timeout=30).until(
                 EC.presence_of_element_located(
                     locator=(By.NAME, password_elem_name)
                 )
             )
-            self._pas.send_keys(self.password+Keys.ENTER)
-            self.logger.debug(
-                f"Element Found: {self._pas}")
+            self._pas.send_keys(self.password + Keys.ENTER)
+            self.logger.debug(f"Element Found: {self._pas}")
 
     # update resume
     def update_resume(self):
@@ -325,7 +336,8 @@ class NaukriLogin(object):
             time.sleep(30)
             resume_file_path = get_resume_path()
             self.logger.info(
-                f"Retrieved resume file path - {resume_file_path}")
+                f"Retrieved resume file path - {resume_file_path}"
+            )
 
             # self.driver.refresh()
             self.driver.get(self._profile_url)
@@ -335,7 +347,9 @@ class NaukriLogin(object):
             upload_resume_id = "attachCV"
             resume_class = upload_resume_id
 
-            resume_submit_button_xpath = "//input[@type='button' and @value='Update Resume']"
+            resume_submit_button_xpath = (
+                "//input[@type='button' and @value='Update Resume']"
+            )
             resume_submit_button_xpath = "//input[@type='button']"
             # resume_submit_button_xpath = "//button[@type='button']"
             # resume_submit_button_xpath = "result"
@@ -351,19 +365,20 @@ class NaukriLogin(object):
             try:
                 self.logger.info(f"Finding resume element - {resume_class}")
                 self._resume_elem = self.driver.find_element_by_id(
-                    id_=resume_class)
+                    id_=resume_class
+                )
                 self._resume_elem.send_keys(resume_file_path)
-                self.logger.debug(
-                    f"Element Found: {self._resume_elem}. ")
+                self.logger.debug(f"Element Found: {self._resume_elem}. ")
 
             except Exception:
                 self.logger.exception(
-                    "Error found in finding resume element:  ")
+                    "Error found in finding resume element:  "
+                )
                 self.logger.debug(
-                    f"Finding resume element using explicit time:  {resume_class}")
+                    f"Finding resume element using explicit time:  {resume_class}"
+                )
                 self._resume_elem = WebDriverWait(
-                    driver=self.driver,
-                    timeout=30
+                    driver=self.driver, timeout=30
                 ).until(
                     EC.presence_of_element_located(
                         locator=(By.ID, resume_class)
@@ -371,16 +386,17 @@ class NaukriLogin(object):
                 )
                 self._resume_elem.send_keys(resume_file_path)
 
-                self.logger.debug(
-                    f"Element Found: {self._resume_elem}. ")
+                self.logger.debug(f"Element Found: {self._resume_elem}. ")
 
             # ----------------------------------------------------------------------------------------
             # finding resume submit button
             try:
                 self.logger.info(
-                    f"Finding resume submit button element - {resume_submit_button_xpath}")
+                    f"Finding resume submit button element - {resume_submit_button_xpath}"
+                )
                 self._resume_submit_elem = self.driver.find_element_by_xpath(
-                    resume_submit_button_xpath)
+                    resume_submit_button_xpath
+                )
                 self._resume_submit_elem.send_keys(Keys.RETURN)
                 # self._resume_submit_elem.click()
                 # self.driver.execute_script("arguments[0].click();", self._resume_submit_elem)
@@ -389,16 +405,18 @@ class NaukriLogin(object):
                 # a.click().perform()
 
                 self.logger.debug(
-                    f"Element Found: {self._resume_submit_elem}. Button Pressed")
+                    f"Element Found: {self._resume_submit_elem}. Button Pressed"
+                )
 
             except Exception:
                 self.logger.exception(
-                    "Error found in finding resume submit button element:  ")
+                    "Error found in finding resume submit button element:  "
+                )
                 self.logger.debug(
-                    f"Finding resume submit button element using explicit time:  {resume_submit_button_xpath}")
+                    f"Finding resume submit button element using explicit time:  {resume_submit_button_xpath}"
+                )
                 self._resume_submit_elem = WebDriverWait(
-                    driver=self.driver,
-                    timeout=30
+                    driver=self.driver, timeout=30
                 ).until(
                     EC.presence_of_element_located(
                         locator=(By.XPATH, resume_submit_button_xpath)
@@ -411,19 +429,22 @@ class NaukriLogin(object):
                 # ActionChains(self.driver).move_to_element(self._resume_submit_elem).click().perform()
 
                 self.logger.debug(
-                    f"Element Found: {self._resume_submit_elem}. Button Pressed")
+                    f"Element Found: {self._resume_submit_elem}. Button Pressed"
+                )
 
         except Exception as e:
             self.logger.error(
-                f'Will try next time. Unexpected error occurred at line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
+                f"Will try next time. Unexpected error occurred at line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}"
+            )
 
 
 @schedule_run(run_every_secs=run_every_secs)
 def main():
     try:
-        naukri = NaukriLogin(username=os.environ.get("NAUKRI_USER_EMAIL"),
-                             password=os.environ.get("NAUKRI_USER_PASSWORD"),
-                             )
+        naukri = NaukriLogin(
+            username=os.environ.get("NAUKRI_USER_EMAIL"),
+            password=os.environ.get("NAUKRI_USER_PASSWORD"),
+        )
         print("Login to naukri.com")
         naukri.login()
 
@@ -432,7 +453,8 @@ def main():
 
     except Exception as e:
         print(
-            f'Error on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}')
+            f"Error on line {sys.exc_info()[-1].tb_lineno} Error Name: {type(e).__name__} Error: {e}"
+        )
 
     finally:
         time.sleep(5)
@@ -451,13 +473,17 @@ if __name__ == "__main__":
     chromedriver_path = os.environ.get("CHROME_WEBDRIVER_PATH")
 
     print(
-        f"Firefox binary - {firefox_binary} exists - {os.path.isfile(firefox_binary)} and executable - {os.access(firefox_binary, os.X_OK)}")
+        f"Firefox binary - {firefox_binary} exists - {os.path.isfile(firefox_binary)} and executable - {os.access(firefox_binary, os.X_OK)}"
+    )
     print(
-        f"Geckodriver binary - {executable_path} exists - {os.path.isfile(executable_path)} and executable - {os.access(executable_path, os.X_OK)}")
+        f"Geckodriver binary - {executable_path} exists - {os.path.isfile(executable_path)} and executable - {os.access(executable_path, os.X_OK)}"
+    )
 
     print(
-        f"Chrome binary - {chrome_binary} exists - {os.path.isfile(chrome_binary)} and executable - {os.access(chrome_binary, os.X_OK)}")
+        f"Chrome binary - {chrome_binary} exists - {os.path.isfile(chrome_binary)} and executable - {os.access(chrome_binary, os.X_OK)}"
+    )
     print(
-        f"Chromedriver binary - {chromedriver_path} exists - {os.path.isfile(chromedriver_path)} and executable - {os.access(chromedriver_path, os.X_OK)}")
+        f"Chromedriver binary - {chromedriver_path} exists - {os.path.isfile(chromedriver_path)} and executable - {os.access(chromedriver_path, os.X_OK)}"
+    )
 
     main()
