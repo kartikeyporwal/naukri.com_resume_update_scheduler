@@ -10,9 +10,9 @@ platformdirs
 python-dotenv
 requests==2.25.1
 selenium==3.141.0
-tomli==2.0.1
-typed-ast==1.5.3
-typing_extensions==4.2.0
-urllib3==1.26.2
-webdriver-manager==3.5.4
-zipp==3.8.0
+tomli
+typed-ast
+typing_extensions
+urllib3
+webdriver-manager
+zipp
