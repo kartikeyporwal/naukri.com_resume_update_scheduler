@@ -14,7 +14,7 @@ A python script that uses selenium webdriver to download latest resume from spec
 `RESUME_PDF_URL` - STR - url of the pdf file of resume; use [this](https://support.google.com/a/users/answer/9308985?hl=en) to get pdf url of resume from google docs  
 `RESUME_FILE_NAME` - STR - name of the resume, e.g., `kartikey_porwal_resume.pdf` to be uploaded on naukri  
 
-`GOOGLE_CHROME_BIN` - STR - path of the Google Chrome binary - DEFAULT PATH: `/app/.apt/usr/bin/google-chrome`
+`CHROME_BINARY_PATH` - STR - path of the Google Chrome binary - DEFAULT PATH: `/app/.apt/usr/bin/google-chrome`
 `CHROME_WEBDRIVER_PATH` - STR - path of the Chrome Webdriver - DEFAULT PATH: `/app/.chromedriver/bin/chromedriver`
 
 `FIREFOX_BINARY_PATH` - STR - path of the Firefox binary - DEFAULT PATH: `/app/vendor/firefox/firefox`
@@ -24,6 +24,59 @@ A python script that uses selenium webdriver to download latest resume from spec
 `NAUKRI_USER_PASSWORD` - STR - naukri.com account password  
 
 `WEBDRIVER_MODE` - STR - CHROME or GECKO; webdriver mode to open particular webdriver  
+
+## Local Test
+
+To run and test the automation locally follow the below mentioned steps
+
+```bash
+
+# Create a new virtual environment
+python -m venv test_env
+
+# Activate the virtual environment
+source test_env/bin/activate
+
+# Install the necessary packages
+python -m pip install -r requirements.txt
+
+# Copy the .env.example file to .env
+
+# Update the environment variables in the .env file
+
+# Run the script
+python naukri_resume_update.py
+
+
+```
+
+
+```bash
+
+# To know the binary location of Google Chrome browser and set the path to `CHROME_BINARY_PATH`
+# default location on ubuntu is /usr/bin/google-chrome-stable
+whereis google-chrome-stable
+# OR
+which google-chrome-stable
+
+# Download the same version of chrome webdriver from https://chromedriver.chromium.org/downloads
+# check the current chrome version using `/usr/bin/google-chrome-stable --version`
+# and set the path to `CHROME_WEBDRIVER_PATH`
+
+
+# To know the binary location of Firefox browser and set the path to `FIREFOX_BINARY_PATH`
+# default location on ubuntu is /usr/bin/firefox
+whereis firefox
+# OR
+which firefox
+
+
+# Download the same version of gecko webdriver from https://github.com/mozilla/geckodriver/releases
+# check the current chrome version using `/usr/bin/firefox --version`
+# and set the path to `GECKO_WEBDRIVER_PATH`
+
+
+```
 
 ## Heroku Configuration
 

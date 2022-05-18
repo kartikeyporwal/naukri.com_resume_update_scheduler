@@ -5,6 +5,7 @@ import sys
 import time
 
 import requests
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.common import exceptions
 from selenium.webdriver.common.action_chains import ActionChains
@@ -14,6 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
+load_dotenv()  # take environment variables from .env.
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 # ROOT_DIR = ""
 
@@ -46,9 +48,7 @@ def schedule_run(run_every_secs):
 def get_resume_path():
     """Downloads resume from pdf url specified in environment variable `RESUME_PDF_URL`"""
     url = os.environ.get("RESUME_PDF_URL")
-    resume_file_name = os.environ.get(
-        "RESUME_FILE_NAME", "kartikey_porwal_resume.pdf"
-    )
+    resume_file_name = os.environ.get("RESUME_FILE_NAME")
 
     resume_file_path = os.path.abspath(
         os.path.join(ROOT_DIR, resume_file_name)
@@ -102,7 +102,7 @@ class NaukriLogin(object):
             self._chrome_options.add_argument("-incognito")
 
             self._chrome_options.binary_location = os.environ.get(
-                "GOOGLE_CHROME_BIN"
+                "CHROME_BINARY_PATH"
             )
 
             # # open chrome without gui
@@ -342,6 +342,7 @@ class NaukriLogin(object):
                 f"Retrieved resume file path - {resume_file_path}"
             )
 
+            self.logger.info(f"Loading profile url to update resume")
             # self.driver.refresh()
             self.driver.get(self._profile_url)
             time.sleep(60)
@@ -469,11 +470,11 @@ if __name__ == "__main__":
 
     print(f"Instantiating the script")
 
-    firefox_binary = os.environ.get("FIREFOX_BINARY_PATH")
-    executable_path = os.environ.get("GECKO_WEBDRIVER_PATH")
+    firefox_binary = str(os.environ.get("FIREFOX_BINARY_PATH"))
+    executable_path = str(os.environ.get("GECKO_WEBDRIVER_PATH"))
 
-    chrome_binary = os.environ.get("GOOGLE_CHROME_BIN")
-    chromedriver_path = os.environ.get("CHROME_WEBDRIVER_PATH")
+    chrome_binary = str(os.environ.get("CHROME_BINARY_PATH"))
+    chromedriver_path = str(os.environ.get("CHROME_WEBDRIVER_PATH"))
 
     print(
         f"Firefox binary - {firefox_binary} exists - {os.path.isfile(firefox_binary)} and executable - {os.access(firefox_binary, os.X_OK)}"
