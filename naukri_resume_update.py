@@ -106,7 +106,8 @@ class NaukriLogin(object):
             )
 
             # # open chrome without gui
-            self._chrome_options.add_argument("--headless")
+            if os.environ.get("DISABLE_HEADLESS_MODE", "0") == "0":
+                self._chrome_options.add_argument("--headless")
 
             # This disables the message "Chrome is being is controlled by automated test software."
             # # deprecated in newer version of chrome webdriver
@@ -160,8 +161,9 @@ class NaukriLogin(object):
             # open in incognito mode
             self._firefox_options.add_argument("-incognito")
 
-            # open chrome without gui
-            self._firefox_options.add_argument("--headless")
+            # open firefox without gui
+            if os.environ.get("DISABLE_HEADLESS_MODE", "0") == "0":
+                self._firefox_options.add_argument("--headless")
 
             self._firefox_options.add_argument("--disable-popups")
             self._firefox_options.add_argument("--disable-notifications")

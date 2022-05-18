@@ -25,7 +25,9 @@ A python script that uses selenium webdriver to download latest resume from spec
 
 `WEBDRIVER_MODE` - STR - CHROME or GECKO; webdriver mode to open particular webdriver  
 
-## Local Test
+`DISABLE_HEADLESS_MODE` - INT - to disable the headless mode when running locally - DEFAULT - 0 to keep headless mode enabled; to disable headless mode, set a number other than 0
+
+## Local Installation and Test
 
 To run and test the automation locally follow the below mentioned steps
 
