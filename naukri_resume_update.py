@@ -46,9 +46,12 @@ def schedule_run(run_every_secs):
 def get_resume_path():
     """Downloads resume from pdf url specified in environment variable `RESUME_PDF_URL`"""
     url = os.environ.get("RESUME_PDF_URL")
+    resume_file_name = os.environ.get(
+        "RESUME_FILE_NAME", "kartikey_porwal_resume.pdf"
+    )
 
     resume_file_path = os.path.abspath(
-        os.path.join(ROOT_DIR, "kartikey_porwal_resume.pdf")
+        os.path.join(ROOT_DIR, resume_file_name)
     )
 
     with open(resume_file_path, "wb") as f:
